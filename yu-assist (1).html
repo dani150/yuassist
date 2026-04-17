@@ -4,8 +4,6 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>YU Assist</title>
-<link rel="icon" type="image/jpeg" href="/bot-logo.jpeg" />
-<link rel="apple-touch-icon" href="/bot-logo.jpeg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -523,7 +521,7 @@ input:checked ~ .toggle-thumb { transform: translateX(18px); }
     sendMessage();
   }
 
-  async function sendMessage() {
+  function sendMessage() {
     const text = chatInput.value.trim();
     if (!text || isBotTyping) return;
     welcomeScreen.style.display = 'none';
@@ -532,35 +530,27 @@ input:checked ~ .toggle-thumb { transform: translateX(18px); }
     chatInput.style.height = 'auto';
     sendBtn.disabled = true;
     showTyping();
-
-    try {
-      const resp = await fetch('/api/chat-proxy', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chatInput: text })
-      });
-
-      if (!resp.ok) throw new Error(`Server responded ${resp.status}`);
-
-      const data = await resp.json();
-      let reply = 'Sorry, I could not generate a response.';
-
-      if (typeof data === 'string') {
-        reply = data;
-      } else if (Array.isArray(data) && data.length > 0) {
-        const first = data[0];
-        reply = first.output || first.response || first.text || JSON.stringify(first);
-      } else if (data && typeof data === 'object') {
-        reply = data.output || data.response || data.text || JSON.stringify(data);
-      }
-
+    // ── MOCK API CALL (replace with n8n webhook) ──
+    setTimeout(() => {
       hideTyping();
-      appendMessage('bot', reply);
-    } catch (err) {
-      hideTyping();
-      appendMessage('bot', 'Oops — something went wrong. Please try again in a moment.');
-      console.error('Chat proxy error:', err);
-    }
+      appendMessage('bot', getMockReply(text));
+    }, 900 + Math.random() * 700);
+  }
+
+  function getMockReply(input) {
+    const campus = body.classList.contains('beren') ? 'Beren Campus' : 'Wilf Campus';
+    const lower = input.toLowerCase();
+    if (lower.includes('calendar') || lower.includes('schedule'))
+      return `The ${campus} academic calendar is available on the YU Registrar's website. Spring 2025 finals run May 12–19. Would you like a direct link to the full calendar?`;
+    if (lower.includes('dining') || lower.includes('food') || lower.includes('eat'))
+      return `${campus} dining hours: Breakfast 7–9:30am, Lunch 11:30am–2pm, Dinner 5–8pm (Mon–Thu). Friday hours are shortened — service ends at 2pm. The dining hall is closed on Shabbat. Need info on a specific station?`;
+    if (lower.includes('shuttle') || lower.includes('bus') || lower.includes('transport'))
+      return `The ${campus} shuttle runs every 30 minutes between Wilf and Beren campuses, 8am–11pm on weekdays. Express runs operate during peak hours (8–10am, 4–6pm). You can track the shuttle live at shuttle.yu.edu.`;
+    if (lower.includes('library') || lower.includes('hours') || lower.includes('open'))
+      return `The ${campus} library is open Mon–Thu 8am–midnight, Fri 8am–3pm, and Sat night (post-Shabbat) until midnight. Sunday hours are 10am–midnight. Extended hours run during finals week. Need help with library resources?`;
+    if (lower.includes('registr') || lower.includes('course') || lower.includes('class'))
+      return `Course registration for Fall 2025 opens April 22. Log in to the YU Student Portal to view your registration window and plan your schedule. Need help navigating the portal?`;
+    return `Thanks for your question! I'm here to help with everything ${campus}-related — academics, campus services, events, and more. Could you tell me a bit more so I can point you in the right direction?`;
   }
 
   function appendMessage(role, text) {
