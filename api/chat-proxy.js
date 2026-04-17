@@ -10,7 +10,7 @@
  *   N8N_WEBHOOK_SECRET — Value for the X-Webhook-Secret header
  */
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // ──── CORS preflight ────
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -81,4 +81,4 @@ export default async function handler(req, res) {
     console.error('Proxy error:', error.message || error);
     return res.status(502).json({ error: 'Failed to reach the chat service.' });
   }
-}
+};
