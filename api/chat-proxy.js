@@ -40,7 +40,7 @@ module.exports = async function handler(req, res) {
   }
 
   // ──── Basic request body validation ────
-  const { action, sessionId, chatInput } = req.body || {};
+  const { action, sessionId, chatInput, campus } = req.body || {};
 
   if (!chatInput || typeof chatInput !== 'string' || chatInput.trim().length === 0) {
     return res.status(400).json({ error: 'chatInput is required and must be a non-empty string.' });
@@ -63,6 +63,7 @@ module.exports = async function handler(req, res) {
         action: action || 'sendMessage',
         sessionId: sessionId || 'anonymous',
         chatInput: chatInput.trim(),
+        campus: campus || 'Wilf',
       }),
     });
 

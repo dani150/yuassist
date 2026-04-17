@@ -541,10 +541,11 @@ input:checked ~ .toggle-thumb { transform: translateX(18px); }
     showTyping();
 
     try {
+      const campus = document.body.classList.contains('beren') ? 'Beren' : 'Wilf';
       const resp = await fetch('/api/chat-proxy', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chatInput: text, sessionId: sessionId, action: 'sendMessage' })
+        body: JSON.stringify({ chatInput: text, sessionId: sessionId, action: 'sendMessage', campus: campus })
       });
 
       if (!resp.ok) throw new Error(`Server responded ${resp.status}`);
