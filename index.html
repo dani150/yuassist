@@ -494,6 +494,13 @@ input:checked ~ .toggle-thumb { transform: translateX(18px); }
   const sendBtn = document.getElementById('send-btn');
   let isBotTyping = false;
 
+  // Unique session ID per browser tab — keeps conversation memory separate per user
+  const sessionId = sessionStorage.getItem('yu-session') || (() => {
+    const id = 'ses_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10);
+    sessionStorage.setItem('yu-session', id);
+    return id;
+  })();
+
   function toggleCampus(chk) { body.classList.toggle('beren', chk.checked); }
 
   function setCampus(campus) {
@@ -537,7 +544,7 @@ input:checked ~ .toggle-thumb { transform: translateX(18px); }
       const resp = await fetch('/api/chat-proxy', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chatInput: text })
+        body: JSON.stringify({ chatInput: text, sessionId: sessionId, action: 'sendMessage' })
       });
 
       if (!resp.ok) throw new Error(`Server responded ${resp.status}`);
