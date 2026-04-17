@@ -1,0 +1,9 @@
+{
+  "name": "yu-assist",
+  "version": "1.0.0",
+  "private": true,
+  "description": "YU Assist — AI chat widget for Yeshiva University, deployed on Vercel",
+  "scripts": {
+    "dev": "vercel dev"
+  }
+}
