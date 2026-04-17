@@ -69,16 +69,31 @@ module.exports = async function handler(req, res) {
     if (!n8nResponse.ok) {
       const errorText = await n8nResponse.text().catch(() => 'Unknown error');
       console.error(`n8n responded with ${n8nResponse.status}: ${errorText}`);
-      return res.status(502).json({ error: 'Upstream service error.' });
+      return res.status(502).json({
+        error: 'Upstream service error.',
+        detail: `n8n returned ${n8nResponse.status}`,
+        hint: errorText.substring(0, 200),
+      });
     }
 
-    const data = await n8nResponse.json();
+    // Try to parse as JSON first, fall back to text
+    const contentType = n8nResponse.headers.get('content-type') || '';
+    let data;
+    if (contentType.includes('application/json')) {
+      data = await n8nResponse.json();
+    } else {
+      const text = await n8nResponse.text();
+      data = { output: text };
+    }
 
-    // ──── Return the n8n response as-is to the frontend ────
+    // ──── Return the n8n response to the frontend ────
     return res.status(200).json(data);
 
   } catch (error) {
     console.error('Proxy error:', error.message || error);
-    return res.status(502).json({ error: 'Failed to reach the chat service.' });
+    return res.status(502).json({
+      error: 'Failed to reach the chat service.',
+      detail: error.message || String(error),
+    });
   }
 };
