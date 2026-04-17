@@ -426,7 +426,25 @@ input:checked ~ .toggle-thumb { transform: translateX(18px); }
   .welcome h1 { font-size: 24px; }
   .header { padding: 0 16px; }
 }
+.bubble ul, .bubble ol {
+  padding-left: 20px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+.bubble li {
+  margin-bottom: 4px;
+}
+.bubble p {
+  margin-bottom: 8px;
+}
+.bubble p:last-child {
+  margin-bottom: 0;
+}
+.bubble strong {
+  font-weight: 700;
+}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
 
@@ -584,7 +602,11 @@ input:checked ~ .toggle-thumb { transform: translateX(18px); }
     }
     const bubble = document.createElement('div');
     bubble.className = `bubble ${role}`;
-    bubble.textContent = text;
+    if (role === 'bot') {
+      bubble.innerHTML = marked.parse(text);
+    } else {
+      bubble.innerText = text;
+    }
     const timeEl = document.createElement('time');
     timeEl.textContent = time;
     bubble.appendChild(timeEl);
