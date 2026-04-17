@@ -1,32 +1,14 @@
-$body = @{chatInput='hello'} | ConvertTo-Json
+Add-Type -AssemblyName System.Net.Http
 
-# Test 1: GET (should return 405 "Method not allowed")
-Write-Host "=== TEST 1: GET (expect 405) ==="
-try {
-    $r = Invoke-WebRequest -Uri 'https://yuassist.vercel.app/api/chat-proxy' -Method GET -UseBasicParsing
-    Write-Host "STATUS: $($r.StatusCode)"
-    Write-Host "BODY: $($r.Content)"
-} catch {
-    $statusCode = $_.Exception.Response.StatusCode.value__
-    $stream = $_.Exception.Response.GetResponseStream()
-    $reader = New-Object System.IO.StreamReader($stream)
-    $responseBody = $reader.ReadToEnd()
-    Write-Host "STATUS: $statusCode"
-    Write-Host "BODY: $responseBody"
-}
+$webhookUrl = 'https://n8n.srv1313035.hstgr.cloud/webhook/e66290dc-41b6-452e-b924-c5883059c517'
+$secret = '58f2bc983352da19327ffda64e22e2c2fde0d0d55f6ff84b39422eb59227a57c'
 
-# Test 2: POST with valid body (the real test)
-Write-Host ""
-Write-Host "=== TEST 2: POST with chatInput ==="
-try {
-    $r = Invoke-WebRequest -Uri 'https://yuassist.vercel.app/api/chat-proxy' -Method POST -ContentType 'application/json' -Body $body -UseBasicParsing
-    Write-Host "STATUS: $($r.StatusCode)"
-    Write-Host "BODY: $($r.Content)"
-} catch {
-    $statusCode = $_.Exception.Response.StatusCode.value__
-    $stream = $_.Exception.Response.GetResponseStream()
-    $reader = New-Object System.IO.StreamReader($stream)
-    $responseBody = $reader.ReadToEnd()
-    Write-Host "STATUS: $statusCode"
-    Write-Host "BODY: $responseBody"
-}
+Write-Host "=== Direct POST to n8n with X-Webhook-Secret ==="
+$client = New-Object System.Net.Http.HttpClient
+$client.DefaultRequestHeaders.Add('X-Webhook-Secret', $secret)
+$content = New-Object System.Net.Http.StringContent('{"action":"sendMessage","sessionId":"test123","chatInput":"hello"}', [System.Text.Encoding]::UTF8, 'application/json')
+$r = $client.PostAsync($webhookUrl, $content).Result
+$body = $r.Content.ReadAsStringAsync().Result
+Write-Host "STATUS: $([int]$r.StatusCode)"
+Write-Host "BODY: $body"
+$client.Dispose()

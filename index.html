@@ -549,9 +549,9 @@ input:checked ~ .toggle-thumb { transform: translateX(18px); }
         reply = data;
       } else if (Array.isArray(data) && data.length > 0) {
         const first = data[0];
-        reply = first.output || first.response || first.text || JSON.stringify(first);
+        reply = first.output || first.reply || first.response || first.text || JSON.stringify(first);
       } else if (data && typeof data === 'object') {
-        reply = data.output || data.response || data.text || JSON.stringify(data);
+        reply = data.output || data.reply || data.response || data.text || JSON.stringify(data);
       }
 
       hideTyping();
