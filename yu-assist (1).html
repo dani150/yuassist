@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -423,6 +424,21 @@ input:checked ~ .toggle-thumb { transform: translateX(18px); }
   .bubble { max-width: 86%; font-size: 14px; }
   .welcome h1 { font-size: 24px; }
   .header { padding: 0 16px; }
+}
+
+.bubble ul, .bubble ol {
+  padding-left: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.bubble li {
+  margin-bottom: 5px;
+}
+.bubble p {
+  margin-bottom: 10px;
+}
+.bubble p:last-child {
+  margin-bottom: 0;
 }
 </style>
 </head>
