@@ -512,12 +512,12 @@ input:checked ~ .toggle-thumb { transform: translateX(18px); }
   const sendBtn = document.getElementById('send-btn');
   let isBotTyping = false;
 
-  // Unique session ID per browser tab — keeps conversation memory separate per user
-  const sessionId = sessionStorage.getItem('yu-session') || (() => {
-    const id = 'ses_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10);
-    sessionStorage.setItem('yu-session', id);
-    return id;
-  })();
+  // 1. Retrieve existing session ID from browser storage, or generate a new one if it doesn't exist
+  let sessionId = localStorage.getItem('yu_assist_session');
+  if (!sessionId) {
+    sessionId = 'web-session-' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+    localStorage.setItem('yu_assist_session', sessionId);
+  }
 
   function toggleCampus(chk) { body.classList.toggle('beren', chk.checked); }
 
